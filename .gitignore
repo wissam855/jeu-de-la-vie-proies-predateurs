@@ -1,0 +1,8 @@
+# Executable et fichiers de compilation
+/simulation
+*.exe
+*.o
+
+# Exports generes (on garde seulement le dossier)
+export/*
+!export/.gitkeep
