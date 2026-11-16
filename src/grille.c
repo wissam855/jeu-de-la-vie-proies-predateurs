@@ -55,8 +55,27 @@ void detruire_grille(Grille *g)
 
 void vider_grille(Grille *g)
 {
-    /* chaque case : type VIDE, energie 0, age 0 */
+    if (g == NULL)
+        return;
+    for (int i = 0; i < g->lignes; i++)
+        for (int j = 0; j < g->colonnes; j++) {
+            g->cases[i][j].type = VIDE;
+            g->cases[i][j].energie = 0;
+            g->cases[i][j].age = 0;
+        }
 }
+
+void copier_grille(const Grille *src, Grille *dst)
+{
+    if (src == NULL || dst == NULL)
+        return;
+    if (src->lignes != dst->lignes || src->colonnes != dst->colonnes)
+        return;
+    for (int i = 0; i < src->lignes; i++)
+        for (int j = 0; j < src->colonnes; j++)
+            dst->cases[i][j] = src->cases[i][j];
+}
+
 
 void copier_grille(const Grille *src, Grille *dst)
 {
