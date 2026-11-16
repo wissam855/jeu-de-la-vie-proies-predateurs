@@ -76,3 +76,45 @@ void copier_grille(const Grille *src, Grille *dst)
             dst->cases[i][j] = src->cases[i][j];
 }
 
+
+void remplir_aleatoire(Grille *g, double p_proie, double p_predateur)
+{
+    if (g == NULL)
+        return;
+    for (int i = 0; i < g->lignes; i++)
+        for (int j = 0; j < g->colonnes; j++) {
+            double x = rand() / (RAND_MAX + 1.0); /* nombre entre 0 (inclus) et 1 (exclu) */
+            Cellule c = { VIDE, 0, 0 };
+            if (x < p_proie)
+                c.type = PROIE;
+            else if (x < p_proie + p_predateur)
+                c.type = PREDATEUR;
+            g->cases[i][j] = c;
+        }
+}
+
+Voisinage compter_voisins(const Grille *g, int i, int j, int tore)
+{
+    Voisinage v = { 0, 0 };
+    if (g == NULL)
+        return v;
+    for (int di = -1; di <= 1; di++)
+        for (int dj = -1; dj <= 1; dj++) {
+            if (di == 0 && dj == 0)
+                continue; /* on ne compte pas la case elle-même */
+            int x = i + di;
+            int y = j + dj;
+            if (tore) {
+                /* les bords se rejoignent */
+                x = (x + g->lignes) % g->lignes;
+                y = (y + g->colonnes) % g->colonnes;
+            } else if (x < 0 || x >= g->lignes || y < 0 || y >= g->colonnes) {
+                continue; /* hors de la grille : on ignore */
+            }
+            if (g->cases[x][y].type == PROIE)
+                v.nb_proies++;
+            else if (g->cases[x][y].type == PREDATEUR)
+                v.nb_predateurs++;
+        }
+    return v;
+}
