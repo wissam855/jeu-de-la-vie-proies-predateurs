@@ -76,8 +76,3 @@ void copier_grille(const Grille *src, Grille *dst)
             dst->cases[i][j] = src->cases[i][j];
 }
 
-
-void copier_grille(const Grille *src, Grille *dst)
-{
-    /* tailles différentes -> rien ; sinon copier case par case */
-}
