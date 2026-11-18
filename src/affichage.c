@@ -6,6 +6,7 @@
 #endif
 
 #include <stdio.h>
+#include <string.h>
 #include "affichage.h"
 
 /* Codes couleur ANSI */
@@ -44,11 +45,48 @@ void afficher_grille(const Grille *g, int couleurs)
     }
 }
 
+void notation_bs(const Regles *r, char *buf, int taille)
+{
+    if (buf == NULL || taille <= 0)
+        return;
+    buf[0] = '\0';
+    if (r == NULL)
+        return;
+    if (r->mode != MODE_VIE) {
+        snprintf(buf, (size_t)taille, "proies/predateurs");
+        return;
+    }
+
+    /* "B" + jusqu'à 9 chiffres + "/S" + jusqu'à 9 chiffres + '\0' = 22 cases max */
+    char tmp[32];
+    int k = 0;
+    tmp[k++] = 'B';
+    for (int n = 0; n <= 8; n++)
+        if (r->naissance[n])
+            tmp[k++] = (char)('0' + n);    /* le chiffre n en caractère */
+    tmp[k++] = '/';
+    tmp[k++] = 'S';
+    for (int n = 0; n <= 8; n++)
+        if (r->survie[n])
+            tmp[k++] = (char)('0' + n);
+    tmp[k] = '\0';
+
+    snprintf(buf, (size_t)taille, "%s", tmp);  /* copie sans dépasser */
+}
+
 void afficher_stats(Stats s, const Regles *r)
 {
-    printf("Generation %d | proies : %d | predateurs : %d | regle : %s\n",
+    char bs[32];
+    notation_bs(r, bs, (int)sizeof bs);
+
+    printf("Generation %d | proies : %d | predateurs : %d | regle : %s",
            s.generation, s.nb_proies, s.nb_predateurs,
            r != NULL ? r->nom : "?");
+
+    /* on ajoute la notation seulement si le nom ne la contient pas déjà */
+    if (r != NULL && bs[0] != '\0' && strstr(r->nom, bs) == NULL)
+        printf(" [%s]", bs);
+    printf("\n");
 }
 
 void pause_ms(int ms)
