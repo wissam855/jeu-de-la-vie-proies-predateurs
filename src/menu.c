@@ -27,12 +27,8 @@ void parametres_par_defaut(Parametres *p)
     /* motif[0] = '\0' (pas de motif), exporter = 0, graine = 0 :
        déjà mis à zéro par memset */
 
-    /* la règle : Conway B3/S23, écrite à la main pour l'instant */
-    strcpy(p->regles.nom, "Conway (B3/S23)");
-    p->regles.mode = MODE_VIE;
-    p->regles.naissance[3] = 1;
-    p->regles.survie[2] = 1;
-    p->regles.survie[3] = 1;
+    /* la règle : la première du catalogue (Conway B3/S23) */
+    p->regles = catalogue_regles(NULL)[0];
 }
 
 /* Lit un entier entre min et max ; redemande tant que la saisie est fausse.
@@ -64,6 +60,52 @@ static void lire_texte(const char *question, char *dest, int taille)
     dest[strcspn(dest, "\r\n")] = '\0';
 }
 
+/* Sous-menu du choix 9 : change la règle de p.
+   Si la nouvelle règle est invalide, l'ancienne est gardée. */
+static void choisir_regle(Parametres *p)
+{
+    printf("\n--- Choix de la regle ---\n");
+    printf("1. Une regle du catalogue\n");
+    printf("2. Un fichier de regles (ex. regles/highlife.txt)\n");
+    printf("3. Taper une regle B/S (ex. B36/S23)\n");
+    printf("0. Retour\n");
+
+    int choix = lire_entier("Ton choix", 0, 3);
+    Regles nouvelle;
+    char texte[256];
+    int ok = -1;
+
+    switch (choix) {
+    case 0:
+        return;                             /* on ne change rien */
+    case 1: {
+        int nb = 0;
+        const Regles *cat = catalogue_regles(&nb);
+        for (int i = 0; i < nb; i++)
+            printf("%d. %s\n", i + 1, cat[i].nom);
+        int n = lire_entier("Numero de la regle", 1, nb);
+        nouvelle = cat[n - 1];              /* copie de la structure */
+        ok = 0;
+        break;
+    }
+    case 2:
+        lire_texte("Chemin du fichier", texte, (int)sizeof texte);
+        ok = charger_regles_fichier(&nouvelle, texte);
+        break;
+    case 3:
+        lire_texte("Regle (ex. B36/S23)", texte, (int)sizeof texte);
+        ok = regles_depuis_chaine(&nouvelle, texte, texte);
+        break;
+    }
+
+    if (ok == 0) {
+        p->regles = nouvelle;
+        printf("Nouvelle regle : %s\n", p->regles.nom);
+    } else {
+        printf("Regle invalide, on garde : %s\n", p->regles.nom);
+    }
+}
+
 int menu_principal(Parametres *p)
 {
     if (p == NULL)
@@ -81,9 +123,10 @@ int menu_principal(Parametres *p)
                p->motif[0] != '\0' ? p->motif : "(grille aleatoire)");
         printf("7. Bords relies (tore)       : %s\n", p->tore ? "oui" : "non");
         printf("8. Couleurs                  : %s\n", p->couleurs ? "oui" : "non");
+        printf("9. Changer de regle\n");
         printf("0. Quitter\n");
 
-        int choix = lire_entier("Ton choix", 0, 8);
+        int choix = lire_entier("Ton choix", 0, 9);
         switch (choix) {
         case 0:
             return 1;                       /* quitter */
@@ -111,6 +154,9 @@ int menu_principal(Parametres *p)
             break;
         case 8:
             p->couleurs = !p->couleurs;
+            break;
+        case 9:
+            choisir_regle(p);
             break;
         }
     }
