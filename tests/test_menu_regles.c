@@ -50,6 +50,8 @@ int main(void)
     assert(menu_principal(&p) == 1);
     assert(strcmp(p.regles.nom, "B36/S23") == 0);
 
+    
+    fclose(stdin);
     remove("test_saisie.txt");
     printf("\nTous les tests du menu des regles sont OK\n");
     return 0;
