@@ -6,3 +6,7 @@
 # Exports generes (on garde seulement le dossier)
 export/*
 !export/.gitkeep
+
+# Fichiers temporaires des tests
+test_saisie.txt
+test_tmp.txt
