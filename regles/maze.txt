@@ -1,0 +1,4 @@
+# Maze : les cellules forment des couloirs, comme un labyrinthe
+nom=Maze (B3/S12345)
+mode=vie
+bs=B3/S12345

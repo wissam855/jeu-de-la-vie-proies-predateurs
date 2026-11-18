@@ -1,0 +1,4 @@
+# Seeds : une case vide nait avec 2 voisins, aucune cellule ne survit
+nom=Seeds (B2/S)
+mode=vie
+bs=B2/S
