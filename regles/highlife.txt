@@ -1,0 +1,4 @@
+# HighLife : comme Conway, mais une case vide nait aussi avec 6 voisins
+nom=HighLife (B36/S23)
+mode=vie
+bs=B36/S23

@@ -1,4 +1,5 @@
 #include <stddef.h>
+#include <stdio.h>
 #include <string.h>
 #include "regles.h"
 
@@ -106,4 +107,64 @@ int regles_depuis_chaine(Regles *r, const char *nom, const char *bs)
 
     *r = tmp;
     return 0;
+}
+
+/* Lit un fichier de règles, une information par ligne au format cle=valeur :
+       # commentaire (ligne ignorée)
+       nom=HighLife
+       mode=vie
+       bs=B36/S23
+   Les lignes vides et celles qui commencent par # sont ignorées.
+   Renvoie 0 si ok, -1 si le fichier est introuvable ou incorrect
+   (et dans ce cas *r n'est pas modifiée). */
+int charger_regles_fichier(Regles *r, const char *chemin)
+{
+    if (r == NULL || chemin == NULL)
+        return -1;
+
+    FILE *f = fopen(chemin, "r");
+    if (f == NULL)
+        return -1;                          /* fichier introuvable */
+
+    char ligne[256];
+    char nom[64] = "";
+    char bs[64] = "";
+    int erreur = 0;
+
+    while (fgets(ligne, sizeof ligne, f) != NULL) {
+        ligne[strcspn(ligne, "\r\n")] = '\0';  /* enlève la fin de ligne */
+
+        if (ligne[0] == '\0' || ligne[0] == '#')
+            continue;                       /* ligne vide ou commentaire */
+
+        char *egal = strchr(ligne, '=');
+        if (egal == NULL) {                 /* pas de '=' : ligne incorrecte */
+            erreur = 1;
+            break;
+        }
+        *egal = '\0';                       /* coupe la ligne en deux */
+        const char *cle = ligne;
+        const char *valeur = egal + 1;
+
+        if (strcmp(cle, "nom") == 0) {
+            strncpy(nom, valeur, sizeof nom - 1);
+        } else if (strcmp(cle, "bs") == 0) {
+            strncpy(bs, valeur, sizeof bs - 1);
+        } else if (strcmp(cle, "mode") == 0) {
+            if (strcmp(valeur, "vie") != 0) {   /* proies/prédateurs : phase 3 */
+                erreur = 1;
+                break;
+            }
+        } else {                            /* clé inconnue */
+            erreur = 1;
+            break;
+        }
+    }
+    fclose(f);
+
+    if (erreur || bs[0] == '\0')
+        return -1;
+
+    /* la lecture de "B36/S23" est déjà écrite : on la réutilise */
+    return regles_depuis_chaine(r, nom, bs);
 }
