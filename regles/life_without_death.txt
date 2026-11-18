@@ -1,0 +1,4 @@
+# Life without Death : une cellule vivante ne meurt jamais
+nom=Life without Death (B3/S012345678)
+mode=vie
+bs=B3/S012345678

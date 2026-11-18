@@ -1,0 +1,4 @@
+# Day & Night : les cases vivantes et vides se comportent de la meme facon
+nom=Day & Night (B3678/S34678)
+mode=vie
+bs=B3678/S34678

@@ -3,21 +3,34 @@
 #include <string.h>
 #include "regles.h"
 
-/* Le catalogue : pour l'instant une seule règle, Conway (B3/S23). */
-static const Regles CATALOGUE[] = {
-    {
-        .nom = "Conway (B3/S23)",
-        .mode = MODE_VIE,
-        /*            voisins : 0  1  2  3  4  5  6  7  8 */
-        .naissance =          { 0, 0, 0, 1, 0, 0, 0, 0, 0 },
-        .survie =             { 0, 0, 1, 1, 0, 0, 0, 0, 0 },
-    },
+/* Le catalogue : les 6 règles du jeu de la vie, écrites en notation B/S.
+   Ce tableau est la seule chose à modifier pour ajouter une règle. */
+static const char *DEFINITIONS[][2] = {
+    /*  nom affiché                          notation B/S   */
+    { "Conway (B3/S23)",                     "B3/S23"        },
+    { "HighLife (B36/S23)",                  "B36/S23"       },
+    { "Seeds (B2/S)",                        "B2/S"          },
+    { "Day & Night (B3678/S34678)",          "B3678/S34678"  },
+    { "Maze (B3/S12345)",                    "B3/S12345"     },
+    { "Life without Death (B3/S012345678)",  "B3/S012345678" },
 };
+
+#define NB_REGLES ((int)(sizeof DEFINITIONS / sizeof DEFINITIONS[0]))
+
+static Regles CATALOGUE[NB_REGLES];  /* rempli au premier appel */
+static int catalogue_pret = 0;       /* 0 tant qu'il n'est pas rempli */
 
 const Regles *catalogue_regles(int *nb)
 {
+    if (!catalogue_pret) {
+        /* on remplit le catalogue une seule fois, en réutilisant
+           regles_depuis_chaine (écrite et testée en N6) */
+        for (int i = 0; i < NB_REGLES; i++)
+            regles_depuis_chaine(&CATALOGUE[i], DEFINITIONS[i][0], DEFINITIONS[i][1]);
+        catalogue_pret = 1;
+    }
     if (nb != NULL)
-        *nb = (int)(sizeof(CATALOGUE) / sizeof(CATALOGUE[0]));
+        *nb = NB_REGLES;
     return CATALOGUE;
 }
 
