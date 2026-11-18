@@ -1,0 +1,4 @@
+# Jeu de la vie de Conway
+nom=Conway (B3/S23)
+mode=vie
+bs=B3/S23
