@@ -15,18 +15,37 @@ static const char *DEFINITIONS[][2] = {
     { "Life without Death (B3/S012345678)",  "B3/S012345678" },
 };
 
-#define NB_REGLES ((int)(sizeof DEFINITIONS / sizeof DEFINITIONS[0]))
+#define NB_VIE ((int)(sizeof DEFINITIONS / sizeof DEFINITIONS[0]))  /* 6 */
+#define NB_REGLES (NB_VIE + 1)        /* + la règle proies/prédateurs */
 
 static Regles CATALOGUE[NB_REGLES];  /* rempli au premier appel */
 static int catalogue_pret = 0;       /* 0 tant qu'il n'est pas rempli */
 
+/* La 7e règle : proies/prédateurs, avec les valeurs de départ du plan
+   (validées à la réunion T3.1, à régler en T3.8). */
+static void regles_proies_predateurs(Regles *r)
+{
+    memset(r, 0, sizeof *r);
+    strncpy(r->nom, "Proies-Predateurs", sizeof r->nom - 1);
+    r->mode = MODE_PROIES_PREDATEURS;
+    r->proie_naissance_min = 2;   /* une case vide devient proie avec 2 ou 3 proies voisines */
+    r->proie_naissance_max = 3;
+    r->proie_survie_min = 1;      /* une proie survit avec 1 à 5 proies voisines */
+    r->proie_survie_max = 5;
+    r->seuil_predation = 2;       /* 2 prédateurs voisins ou plus : la proie est mangée */
+    r->pred_energie_init = 4;     /* énergie d'un nouveau prédateur */
+    r->pred_gain = 2;             /* énergie gagnée s'il a au moins une proie voisine */
+    r->pred_age_max = 15;         /* au-delà, le prédateur meurt de vieillesse */
+}
+
 const Regles *catalogue_regles(int *nb)
 {
     if (!catalogue_pret) {
-        /* on remplit le catalogue une seule fois, en réutilisant
-           regles_depuis_chaine (écrite et testée en N6) */
-        for (int i = 0; i < NB_REGLES; i++)
+        /* les 6 règles du jeu de la vie : on réutilise regles_depuis_chaine (N6) */
+        for (int i = 0; i < NB_VIE; i++)
             regles_depuis_chaine(&CATALOGUE[i], DEFINITIONS[i][0], DEFINITIONS[i][1]);
+        /* la 7e : proies/prédateurs */
+        regles_proies_predateurs(&CATALOGUE[NB_VIE]);
         catalogue_pret = 1;
     }
     if (nb != NULL)
@@ -34,31 +53,75 @@ const Regles *catalogue_regles(int *nb)
     return CATALOGUE;
 }
 
+/* Une case qui devient vide : on remet tout à zéro. */
+static Cellule case_vide(void)
+{
+    Cellule v = { VIDE, 0, 0 };
+    return v;
+}
+
+/* Mode proies/prédateurs. P = proies voisines, D = prédateurs voisins. */
+static Cellule regle_pp(Cellule c, int P, int D, const Regles *r)
+{
+    Cellule res = c;
+
+    if (c.type == VIDE) {
+        /* naissance d'une proie : aucun prédateur autour et assez de proies */
+        if (D == 0 && P >= r->proie_naissance_min && P <= r->proie_naissance_max) {
+            res.type = PROIE;
+            res.energie = 0;
+            res.age = 0;
+        }
+    } else if (c.type == PROIE) {
+        /* 1) la prédation passe AVANT la survie */
+        if (D >= r->seuil_predation) {
+            res.type = PREDATEUR;               /* la proie est mangée */
+            res.energie = r->pred_energie_init;
+            res.age = 0;
+        } else if (P < r->proie_survie_min || P > r->proie_survie_max) {
+            res = case_vide();                  /* isolement ou surpopulation */
+        } else {
+            res.age = c.age + 1;                /* elle survit */
+        }
+    } else {                                    /* PREDATEUR */
+        res.energie = c.energie - 1;            /* il dépense de l'énergie */
+        if (P >= 1)
+            res.energie += r->pred_gain;        /* il mange */
+        if (res.energie <= 0 || c.age + 1 > r->pred_age_max)
+            res = case_vide();                  /* faim ou vieillesse */
+        else
+            res.age = c.age + 1;
+    }
+    return res;
+}
+
 Cellule appliquer_regle(Cellule c, Voisinage v, const Regles *r)
 {
     Cellule res = c;
     int n = v.nb_proies;
 
-    if (r == NULL || n < 0 || n > 8)
+    if (r == NULL || n < 0 || n > 8 || v.nb_predateurs < 0 || v.nb_predateurs > 8)
         return res;
 
-    if (r->mode == MODE_VIE) {
-        if (c.type == PROIE) {
-            if (r->survie[n]) {
-                res.age = c.age + 1;
-            } else {
-                res.type = VIDE;
-                res.energie = 0;
-                res.age = 0;
-            }
+    if (r->mode == MODE_PROIES_PREDATEURS)
+        return regle_pp(c, v.nb_proies, v.nb_predateurs, r);
+
+    /* MODE_VIE */
+    if (c.type == PROIE) {
+        if (r->survie[n]) {
+            res.age = c.age + 1;
         } else {
-            if (r->naissance[n]) {
-                res.type = PROIE;
-                res.energie = 0;
-                res.age = 0;
-            } else {
-                res.type = VIDE;
-            }
+            res.type = VIDE;
+            res.energie = 0;
+            res.age = 0;
+        }
+    } else {
+        if (r->naissance[n]) {
+            res.type = PROIE;
+            res.energie = 0;
+            res.age = 0;
+        } else {
+            res.type = VIDE;
         }
     }
     return res;

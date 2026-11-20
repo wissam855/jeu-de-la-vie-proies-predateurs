@@ -19,10 +19,13 @@ int main(void)
     int nb = 0;
     const Regles *cat = catalogue_regles(&nb);
 
-    /* Test 1 : 6 règles, toutes en mode vie */
-    assert(nb == 6);
-    for (int i = 0; i < nb; i++)
+    /* Test 1 : 7 règles : les 6 premières en mode vie, la 7e proies/prédateurs */
+    assert(nb == 7);
+    for (int i = 0; i < 6; i++)
         assert(cat[i].mode == MODE_VIE);
+    assert(cat[6].mode == MODE_PROIES_PREDATEURS);
+    assert(strcmp(cat[6].nom, "Proies-Predateurs") == 0);
+    assert(cat[6].seuil_predation == 2 && cat[6].pred_energie_init == 4);
 
     /* Test 2 : Conway reste la première (B3/S23) */
     assert(strcmp(cat[0].nom, "Conway (B3/S23)") == 0);
@@ -43,7 +46,7 @@ int main(void)
 
     /* Test 6 : un 2e appel renvoie le même catalogue */
     int nb2 = 0;
-    assert(catalogue_regles(&nb2) == cat && nb2 == 6);
+    assert(catalogue_regles(&nb2) == cat && nb2 == 7);
     assert(catalogue_regles(NULL) == cat);
 
     /* Test 7 : chaque fichier de regles/ donne la même règle que le catalogue */
