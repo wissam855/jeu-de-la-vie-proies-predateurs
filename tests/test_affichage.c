@@ -13,11 +13,13 @@ int main(void)
     /* Test 1 : les 6 règles du catalogue redonnent leur notation */
     const char *attendu[6] = { "B3/S23", "B36/S23", "B2/S",
                                "B3678/S34678", "B3/S12345", "B3/S012345678" };
-    assert(nb == 6);
+    assert(nb == 7);
     for (int i = 0; i < 6; i++) {
         notation_bs(&cat[i], bs, (int)sizeof bs);
         assert(strcmp(bs, attendu[i]) == 0);
     }
+    notation_bs(&cat[6], bs, (int)sizeof bs);     /* la 7e : proies/prédateurs */
+    assert(strcmp(bs, "proies/predateurs") == 0);
 
     /* Test 2 : aller-retour avec regles_depuis_chaine (N6) */
     Regles r;
