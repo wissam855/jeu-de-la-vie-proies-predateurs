@@ -118,3 +118,15 @@ Voisinage compter_voisins(const Grille *g, int i, int j, int tore)
         }
     return v;
 }
+
+void initialiser_predateurs(Grille *g, int energie)
+{
+    if (g == NULL)
+        return;
+    for (int i = 0; i < g->lignes; i++)
+        for (int j = 0; j < g->colonnes; j++)
+            if (g->cases[i][j].type == PREDATEUR) {
+                g->cases[i][j].energie = energie;
+                g->cases[i][j].age = 0;
+            }
+}
