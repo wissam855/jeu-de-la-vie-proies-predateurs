@@ -1,0 +1,9 @@
+# Proies/predateurs : valeurs de depart validees a la reunion T3.1
+nom=Proies-Predateurs
+mode=pp
+proie_naissance=2-3
+proie_survie=1-5
+seuil_predation=2
+pred_energie_init=4
+pred_gain=2
+pred_age_max=15
