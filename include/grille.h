@@ -15,6 +15,11 @@ void vider_grille(Grille *g);
 /* Remplit au hasard : p_proie et p_predateur sont des proportions entre 0 et 1. */
 void remplir_aleatoire(Grille *g, double p_proie, double p_predateur);
 
+/* Donne l'energie "energie" a chaque predateur de la grille et remet son age a 0.
+   A appeler apres remplir_aleatoire ou un motif : sinon les predateurs
+   partent avec 0 d'energie et meurent des la 1re generation. */
+void initialiser_predateurs(Grille *g, int energie);
+
 /* Copie src dans dst (les deux grilles doivent avoir la meme taille). */
 void copier_grille(const Grille *src, Grille *dst);
 
