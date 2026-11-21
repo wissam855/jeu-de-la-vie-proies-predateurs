@@ -12,6 +12,10 @@
    Renvoie 0 si tout s'est bien passé, 1 en cas d'erreur. */
 static int lancer_simulation(const Parametres *p)
 {
+    /* même graine = même grille de départ (utile pour comparer des essais) */
+    if (p->graine != 0)
+        srand(p->graine);
+
     /* 1. la grille de départ : un motif ou du hasard */
     Grille *actuelle;
     if (p->motif[0] != '\0') {
@@ -28,6 +32,10 @@ static int lancer_simulation(const Parametres *p)
         }
         remplir_aleatoire(actuelle, p->p_proie, p->p_predateur);
     }
+
+    /* les prédateurs de départ ont 0 d'énergie : on leur donne celle de la règle
+       (E8). En mode vie, il n'y a pas de prédateur : ça ne change rien. */
+    initialiser_predateurs(actuelle, p->regles.pred_energie_init);
 
     /* 2. la deuxième grille, de la même taille */
     Grille *suivante = creer_grille(actuelle->lignes, actuelle->colonnes);
