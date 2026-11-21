@@ -45,11 +45,24 @@ static int lancer_simulation(const Parametres *p)
         return 1;
     }
 
-    /* 3. la boucle : afficher, calculer la suite, échanger, attendre */
+    /* 3. l'export des populations (J9) : export/stats.csv, si le choix 11 est à oui.
+       Si le fichier ne s'ouvre pas, on prévient et la simulation continue sans export. */
+    FILE *csv = NULL;
+    if (p->exporter) {
+        csv = fopen("export/stats.csv", "w");
+        if (csv == NULL)
+            fprintf(stderr, "Attention : impossible d'ecrire export/stats.csv\n");
+    }
+
+    /* 4. la boucle : afficher, exporter, calculer la suite, échanger, attendre */
     for (int gen = 0; gen < p->nb_generations; gen++) {
+        Stats s = calculer_stats(actuelle, gen);
+
         effacer_ecran();
         afficher_grille(actuelle, p->couleurs);
-        afficher_stats(calculer_stats(actuelle, gen), &p->regles);
+        afficher_stats(s, &p->regles);
+        if (csv != NULL)
+            exporter_stats_csv(csv, s);
 
         etape_suivante(actuelle, suivante, &p->regles, p->tore);
 
@@ -60,7 +73,11 @@ static int lancer_simulation(const Parametres *p)
         pause_ms(p->delai_ms);
     }
 
-    /* 4. on libère tout */
+    /* 5. on ferme le fichier et on libère tout */
+    if (csv != NULL) {
+        fclose(csv);
+        printf("Populations enregistrees dans export/stats.csv\n");
+    }
     detruire_grille(actuelle);
     detruire_grille(suivante);
     return 0;

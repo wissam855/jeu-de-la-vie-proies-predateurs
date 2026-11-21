@@ -129,9 +129,10 @@ int menu_principal(Parametres *p)
             printf("10. Graine du hasard         : aleatoire\n");
         else
             printf("10. Graine du hasard         : %u\n", p->graine);
+        printf("11. Export export/stats.csv  : %s\n", p->exporter ? "oui" : "non");
         printf("0. Quitter\n");
 
-        int choix = lire_entier("Ton choix", 0, 10);
+        int choix = lire_entier("Ton choix", 0, 11);
         switch (choix) {
         case 0:
             return 1;                       /* quitter */
@@ -172,6 +173,9 @@ int menu_principal(Parametres *p)
             /* 0 = une grille différente à chaque fois ; un autre nombre (ex. 42)
                = la même grille de départ à chaque lancement */
             p->graine = (unsigned int)lire_entier("Graine (0 = aleatoire)", 0, 1000000);
+            break;
+        case 11:
+            p->exporter = !p->exporter;     /* oui <-> non */
             break;
         }
     }
