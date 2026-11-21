@@ -118,15 +118,20 @@ int menu_principal(Parametres *p)
         printf("2. Taille de la grille       : %d x %d\n", p->lignes, p->colonnes);
         printf("3. Nombre de generations     : %d\n", p->nb_generations);
         printf("4. Pause entre generations   : %d ms\n", p->delai_ms);
-        printf("5. Proies au depart          : %d %%\n", (int)(p->p_proie * 100 + 0.5));
+        printf("5. Proies / predateurs       : %d %% / %d %%\n",
+               (int)(p->p_proie * 100 + 0.5), (int)(p->p_predateur * 100 + 0.5));
         printf("6. Motif de depart           : %s\n",
                p->motif[0] != '\0' ? p->motif : "(grille aleatoire)");
         printf("7. Bords relies (tore)       : %s\n", p->tore ? "oui" : "non");
         printf("8. Couleurs                  : %s\n", p->couleurs ? "oui" : "non");
         printf("9. Changer de regle\n");
+        if (p->graine == 0)
+            printf("10. Graine du hasard         : aleatoire\n");
+        else
+            printf("10. Graine du hasard         : %u\n", p->graine);
         printf("0. Quitter\n");
 
-        int choix = lire_entier("Ton choix", 0, 9);
+        int choix = lire_entier("Ton choix", 0, 10);
         switch (choix) {
         case 0:
             return 1;                       /* quitter */
@@ -142,9 +147,14 @@ int menu_principal(Parametres *p)
         case 4:
             p->delai_ms = lire_entier("Pause en millisecondes", 0, 2000);
             break;
-        case 5:
-            p->p_proie = lire_entier("Pourcentage de proies", 0, 100) / 100.0;
+        case 5: {
+            /* proies + prédateurs ne doivent pas dépasser 100 % */
+            int proies = lire_entier("Pourcentage de proies", 0, 100);
+            int preds = lire_entier("Pourcentage de predateurs", 0, 100 - proies);
+            p->p_proie = proies / 100.0;
+            p->p_predateur = preds / 100.0;
             break;
+        }
         case 6:
             lire_texte("Fichier motif (ex. motifs/planeur.txt, vide = aleatoire)",
                        p->motif, (int)sizeof p->motif);
@@ -157,6 +167,11 @@ int menu_principal(Parametres *p)
             break;
         case 9:
             choisir_regle(p);
+            break;
+        case 10:
+            /* 0 = une grille différente à chaque fois ; un autre nombre (ex. 42)
+               = la même grille de départ à chaque lancement */
+            p->graine = (unsigned int)lire_entier("Graine (0 = aleatoire)", 0, 1000000);
             break;
         }
     }
