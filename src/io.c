@@ -49,3 +49,17 @@ Grille *charger_motif(const char *chemin)
     fclose(f);
     return g;
 }
+
+int exporter_stats_csv(FILE *f, Stats s)
+{
+    if (f == NULL)
+        return -1;                        /* pas de fichier ouvert */
+
+    /* à la génération 0, on écrit d'abord le nom des colonnes */
+    if (s.generation == 0)
+        fprintf(f, "generation,proies,predateurs\n");
+
+    /* une ligne par génération : 3 nombres séparés par des virgules */
+    fprintf(f, "%d,%d,%d\n", s.generation, s.nb_proies, s.nb_predateurs);
+    return 0;
+}
