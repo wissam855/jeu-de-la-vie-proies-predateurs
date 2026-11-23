@@ -11,7 +11,8 @@ typedef struct {
     int couleurs;           /* 1 = affichage en couleur */
     double p_proie, p_predateur;   /* proportions de depart, entre 0 et 1 */
     char motif[256];        /* "" = grille aleatoire */
-    int exporter;           /* 1 = ecrire dans export/ */
+    int exporter;           /* 1 = ecrire export/stats.csv */
+    int exporter_web;       /* 1 = ecrire export/etats.txt et export/etats.js (page web) */
     unsigned int graine;    /* pour srand : meme graine = meme grille de depart */
     Regles regles;
 } Parametres;

@@ -24,7 +24,7 @@ void parametres_par_defaut(Parametres *p)
     p->p_proie = 0.3;
     p->p_predateur = 0.0;
 
-    /* motif[0] = '\0' (pas de motif), exporter = 0, graine = 0 :
+    /* motif[0] = '\0' (pas de motif), exporter = 0, exporter_web = 0, graine = 0 :
        déjà mis à zéro par memset */
 
     /* la règle : la première du catalogue (Conway B3/S23) */
@@ -130,9 +130,10 @@ int menu_principal(Parametres *p)
         else
             printf("10. Graine du hasard         : %u\n", p->graine);
         printf("11. Export export/stats.csv  : %s\n", p->exporter ? "oui" : "non");
+        printf("12. Export page web (etats.js) : %s\n", p->exporter_web ? "oui" : "non");
         printf("0. Quitter\n");
 
-        int choix = lire_entier("Ton choix", 0, 11);
+        int choix = lire_entier("Ton choix", 0, 12);
         switch (choix) {
         case 0:
             return 1;                       /* quitter */
@@ -176,6 +177,9 @@ int menu_principal(Parametres *p)
             break;
         case 11:
             p->exporter = !p->exporter;     /* oui <-> non */
+            break;
+        case 12:
+            p->exporter_web = !p->exporter_web;
             break;
         }
     }

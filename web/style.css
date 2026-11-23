@@ -1,0 +1,35 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #1b1b1b;
+  color: #eeeeee;
+  text-align: center;
+  margin: 20px;
+}
+
+h1 { margin-bottom: 4px; }
+
+canvas {
+  background: #000000;
+  border: 2px solid #555555;
+  max-width: 100%;
+}
+
+#commandes {
+  margin: 12px 0;
+}
+
+#commandes label { margin: 0 8px; }
+
+button {
+  font-size: 16px;
+  padding: 6px 16px;
+  cursor: pointer;
+}
+
+#curseur-generation { width: 300px; }
+
+.legende { font-size: 14px; }
+.proie { color: #33cc33; }
+.predateur { color: #ff3333; }
+
+#info.erreur { color: #ff6666; }
