@@ -10,3 +10,6 @@ export/*
 # Fichiers temporaires des tests
 test_saisie.txt
 test_tmp.txt
+
+test_tmp_etats.*
+test_bin

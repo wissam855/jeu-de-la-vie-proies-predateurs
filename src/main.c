@@ -54,6 +54,17 @@ static int lancer_simulation(const Parametres *p)
             fprintf(stderr, "Attention : impossible d'ecrire export/stats.csv\n");
     }
 
+    /* 3 bis. l'export pour la page web (J10) : export/etats.txt, si le choix 12 est à oui.
+       La premiere ligne (taille + nom de la regle) est ecrite une seule fois. */
+    FILE *etats = NULL;
+    if (p->exporter_web) {
+        etats = fopen("export/etats.txt", "w");
+        if (etats == NULL)
+            fprintf(stderr, "Attention : impossible d'ecrire export/etats.txt\n");
+        else
+            exporter_entete(etats, actuelle, p->regles.nom);
+    }
+
     /* 4. la boucle : afficher, exporter, calculer la suite, échanger, attendre */
     for (int gen = 0; gen < p->nb_generations; gen++) {
         Stats s = calculer_stats(actuelle, gen);
@@ -63,6 +74,8 @@ static int lancer_simulation(const Parametres *p)
         afficher_stats(s, &p->regles);
         if (csv != NULL)
             exporter_stats_csv(csv, s);
+        if (etats != NULL)
+            exporter_etat(etats, actuelle, gen);
 
         etape_suivante(actuelle, suivante, &p->regles, p->tore);
 
@@ -77,6 +90,14 @@ static int lancer_simulation(const Parametres *p)
     if (csv != NULL) {
         fclose(csv);
         printf("Populations enregistrees dans export/stats.csv\n");
+    }
+    if (etats != NULL) {
+        fclose(etats);
+        /* etats.txt -> etats.js : c'est ce fichier que lit la page web */
+        if (convertir_export_js("export/etats.txt", "export/etats.js") == 0)
+            printf("Page web : ouvrir web/index.html (donnees dans export/etats.js)\n");
+        else
+            fprintf(stderr, "Attention : conversion en export/etats.js impossible\n");
     }
     detruire_grille(actuelle);
     detruire_grille(suivante);

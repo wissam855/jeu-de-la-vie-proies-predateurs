@@ -7,7 +7,12 @@
 /* Charge un motif (ex. motifs/planeur.txt). NULL si erreur. */
 Grille *charger_motif(const char *chemin);
 
-/* Ecrit une generation dans le fichier d'export. 0 si ok, -1 si erreur. */
+/* Ecrit la premiere ligne de export/etats.txt : LIGNES l COLONNES c REGLE nom.
+   A appeler une seule fois, avant la generation 0. 0 si ok, -1 si erreur. */
+int exporter_entete(FILE *f, const Grille *g, const char *regle);
+
+/* Ecrit une generation dans le fichier d'export : la ligne "GEN n", puis la grille
+   (. vide, o proie, X predateur). 0 si ok, -1 si erreur. */
 int exporter_etat(FILE *f, const Grille *g, int generation);
 
 /* Ecrit une ligne generation,proies,predateurs. 0 si ok, -1 si erreur. */

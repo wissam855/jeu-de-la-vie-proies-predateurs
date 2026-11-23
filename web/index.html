@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Jeu de la vie - Proies / Predateurs</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Simulateur d'ecosysteme</h1>
+  <p id="info">Chargement...</p>
+
+  <canvas id="grille" width="800" height="400"></canvas>
+
+  <div id="commandes">
+    <button id="bouton-lecture" type="button">Pause</button>
+    <label>Generation
+      <input id="curseur-generation" type="range" min="0" max="0" value="0">
+    </label>
+    <span id="numero-generation">0</span>
+    <label>Vitesse
+      <input id="curseur-vitesse" type="range" min="1" max="30" value="10">
+    </label>
+    <span id="valeur-vitesse">10 gen/s</span>
+  </div>
+
+  <p id="compteurs"></p>
+  <canvas id="courbe" width="800" height="160"></canvas>
+  <p class="legende"><span class="proie">&#9632; proies</span> <span class="predateur">&#9632; predateurs</span></p>
+
+  <!-- les donnees : generees par ./simulation (menu, choix 12) -->
+  <script src="../export/etats.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
