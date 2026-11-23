@@ -25,7 +25,7 @@ int main(void)
         assert(cat[i].mode == MODE_VIE);
     assert(cat[6].mode == MODE_PROIES_PREDATEURS);
     assert(strcmp(cat[6].nom, "Proies-Predateurs") == 0);
-    assert(cat[6].seuil_predation == 2 && cat[6].pred_energie_init == 4);
+    assert(cat[6].seuil_predation == 1 && cat[6].pred_energie_init == 1);
 
     /* Test 2 : Conway reste la première (B3/S23) */
     assert(strcmp(cat[0].nom, "Conway (B3/S23)") == 0);

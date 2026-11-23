@@ -32,8 +32,8 @@ static void regles_proies_predateurs(Regles *r)
     r->proie_naissance_max = 3;
     r->proie_survie_min = 1;      /* une proie survit avec 1 à 5 proies voisines */
     r->proie_survie_max = 5;
-    r->seuil_predation = 2;       /* 2 prédateurs voisins ou plus : la proie est mangée */
-    r->pred_energie_init = 4;     /* énergie d'un nouveau prédateur */
+    r->seuil_predation = 1;       /* 1 prédateur voisin ou plus : la proie est mangée */
+    r->pred_energie_init = 1;     /* énergie d'un nouveau prédateur */
     r->pred_gain = 2;             /* énergie gagnée s'il a au moins une proie voisine */
     r->pred_age_max = 15;         /* au-delà, le prédateur meurt de vieillesse */
 }

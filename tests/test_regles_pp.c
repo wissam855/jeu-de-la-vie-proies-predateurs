@@ -22,6 +22,14 @@ int main(void)
     assert(r->mode == MODE_PROIES_PREDATEURS);
     Cellule res;
 
+    /* Les cas ci-dessous sont écrits pour seuil_predation = 2 et une énergie
+       de départ de 4 : on fixe ces valeurs ici pour que le test ne dépende
+       pas du réglage final du catalogue (T3.8). */
+    Regles ref = *r;
+    ref.seuil_predation = 2;
+    ref.pred_energie_init = 4;
+    r = &ref; 
+
     /* Les six cas de E7 (valeurs du plan : naissance 2-3, survie 1-5,
        seuil 2, énergie 4, gain 2, âge maximal 15) */
 

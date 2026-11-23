@@ -25,7 +25,13 @@ int main(void)
     int nb;
     const Regles *pp = &catalogue_regles(&nb)[6];
     assert(pp->mode == MODE_PROIES_PREDATEURS);
-
+    /* Les cas ci-dessous sont écrits pour seuil_predation = 2 et une énergie
+       de départ de 4 : on fixe ces valeurs ici pour que le test ne dépende
+       pas du réglage final du catalogue (T3.8). */
+    Regles ref = *pp;
+    ref.seuil_predation = 2;
+    ref.pred_energie_init = 4;
+    pp = &ref;
     Grille *a = creer_grille(5, 5);
     Grille *b = creer_grille(5, 5);
     assert(a != NULL && b != NULL);
