@@ -21,8 +21,8 @@ static const char *DEFINITIONS[][2] = {
 static Regles CATALOGUE[NB_REGLES];  /* rempli au premier appel */
 static int catalogue_pret = 0;       /* 0 tant qu'il n'est pas rempli */
 
-/* La 7e règle : proies/prédateurs, avec les valeurs de départ du plan
-   (validées à la réunion T3.1, à régler en T3.8). */
+/* La 7e règle : proies/prédateurs, avec les valeurs trouvées en T3.8
+   (les deux espèces coexistent après 500 générations, voir docs/experiences.md). */
 static void regles_proies_predateurs(Regles *r)
 {
     memset(r, 0, sizeof *r);
@@ -38,6 +38,10 @@ static void regles_proies_predateurs(Regles *r)
     r->pred_age_max = 15;         /* au-delà, le prédateur meurt de vieillesse */
 }
 
+/* Renvoie le catalogue des 7 règles (6 règles du jeu de la vie + proies/prédateurs).
+   Le catalogue est rempli au premier appel, puis réutilisé.
+   Paramètre : nb = si ce n'est pas NULL, reçoit le nombre de règles (7).
+   Renvoie : un tableau de Regles qu'il ne faut ni modifier ni libérer. */
 const Regles *catalogue_regles(int *nb)
 {
     if (!catalogue_pret) {
@@ -95,6 +99,10 @@ static Cellule regle_pp(Cellule c, int P, int D, const Regles *r)
     return res;
 }
 
+/* Calcule ce que devient UNE case à la génération suivante.
+   Paramètres : c = la case actuelle ; v = ses voisins (proies et prédateurs) ;
+   r = la règle à appliquer (mode vie ou proies/prédateurs).
+   Renvoie : la nouvelle case. Si r est NULL ou si v est incohérent, la case est renvoyée inchangée. */
 Cellule appliquer_regle(Cellule c, Voisinage v, const Regles *r)
 {
     Cellule res = c;
