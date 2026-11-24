@@ -2,6 +2,10 @@
 #include <string.h>
 #include "menu.h"
 
+/* Remplit p avec les valeurs par défaut : grille 20 x 40, 100 générations, pause de 100 ms,
+   bords reliés, couleurs, 30 % de proies, règle de Conway.
+   Paramètre : p = les paramètres à remplir (s'il est NULL, la fonction ne fait rien).
+   Pas de valeur renvoyée. */
 void parametres_par_defaut(Parametres *p)
 {
     if (p == NULL)
@@ -106,6 +110,10 @@ static void choisir_regle(Parametres *p)
     }
 }
 
+/* Affiche le menu en boucle et modifie p selon les choix de l'utilisateur (taille, pause,
+   proportions, motif, tore, couleurs, règle, graine, exports).
+   Paramètre : p = les paramètres à modifier.
+   Renvoie : 0 pour lancer une simulation (choix 1), 1 pour quitter (choix 0, ou p NULL). */
 int menu_principal(Parametres *p)
 {
     if (p == NULL)

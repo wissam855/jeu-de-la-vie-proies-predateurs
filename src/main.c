@@ -104,6 +104,11 @@ static int lancer_simulation(const Parametres *p)
     return 0;
 }
 
+/* Point d'entrée : prépare les paramètres par défaut, lit le motif donné en argument
+   (./simulation motifs/planeur.txt), initialise le hasard, puis répète « menu, puis simulation »
+   jusqu'à ce que l'utilisateur choisisse 0 (Quitter).
+   Paramètres : argc, argv = argv[1] (facultatif) est le fichier motif de départ.
+   Renvoie : 0. */
 int main(int argc, char *argv[])
 {
     Parametres p;
