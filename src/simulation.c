@@ -2,6 +2,13 @@
 #include "simulation.h"
 #include "grille.h"
 
+/* Calcule la génération suivante : lit uniquement dans actuelle et écrit uniquement dans
+   suivante, donc toutes les cellules changent en même temps. Chaque case reçoit la règle
+   appliquée à son état et à ses voisins.
+   Paramètres : actuelle = la génération en cours, suivante = la grille où écrire (même
+   taille), r = la règle à appliquer, tore = 1 si les bords se rejoignent.
+   Si un pointeur est NULL ou si les tailles diffèrent, rien n'est fait.
+   Pas de valeur renvoyée. */
 void etape_suivante(const Grille *actuelle, Grille *suivante, const Regles *r, int tore)
 {
     if (actuelle == NULL || suivante == NULL || r == NULL)
@@ -18,6 +25,10 @@ void etape_suivante(const Grille *actuelle, Grille *suivante, const Regles *r, i
         }
 }
 
+/* Compte les proies et les prédateurs de la grille.
+   Paramètres : g = la grille (s'il est NULL, les deux compteurs restent à 0),
+   generation = le numéro de génération à noter dans le résultat.
+   Renvoie : les statistiques (numéro de génération, nombre de proies, nombre de prédateurs). */
 Stats calculer_stats(const Grille *g, int generation)
 {
     Stats s = { generation, 0, 0 };
