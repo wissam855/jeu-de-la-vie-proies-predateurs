@@ -3,6 +3,26 @@
 #include "io.h"
 #include "grille.h"
 
+/* Taille maximale (lignes ou colonnes) acceptée dans l'en-tête d'un motif. */
+#define MOTIF_MAX 1000
+
+/* Ferme le fichier f, détruit la grille g et renvoie NULL : c'est la sortie
+   commune de charger_motif quand le fichier est invalide. */
+static Grille *refuser_motif(Grille *g, FILE *f)
+{
+    detruire_grille(g);
+    fclose(f);
+    return NULL;
+}
+
+/* Charge un motif de départ depuis un fichier texte.
+   Format : une première ligne « lignes colonnes », puis une ligne de texte par ligne
+   de grille ('.' = vide, 'o' = proie, 'X' = prédateur). Les lignes vides sont ignorées.
+   Paramètre : chemin = le fichier à lire (ex. motifs/planeur.txt).
+   Renvoie : la nouvelle grille (à libérer avec detruire_grille), ou NULL si le fichier
+   est introuvable ou invalide : en-tête illisible ou hors de 1 à 1000, ligne trop
+   courte ou trop longue, caractère inconnu, ligne en trop, fichier incomplet.
+   Dans tous les cas d'erreur, le fichier est fermé et rien n'est laissé alloué. */
 Grille *charger_motif(const char *chemin)
 {
     if (chemin == NULL)
@@ -14,9 +34,11 @@ Grille *charger_motif(const char *chemin)
 
     /* 1re ligne : le nombre de lignes et de colonnes */
     int lignes, colonnes;
-    if (fscanf(f, "%d %d", &lignes, &colonnes) != 2) {
+    if (fscanf(f, "%d %d", &lignes, &colonnes) != 2
+        || lignes < 1 || lignes > MOTIF_MAX
+        || colonnes < 1 || colonnes > MOTIF_MAX) {
         fclose(f);
-        return NULL;                      /* en-tête illisible */
+        return NULL;                      /* en-tête illisible ou taille absurde */
     }
 
     Grille *g = creer_grille(lignes, colonnes);
@@ -25,29 +47,43 @@ Grille *charger_motif(const char *chemin)
         return NULL;
     }
 
-    /* ensuite : une ligne de texte par ligne de grille
-       '.' = vide, 'o' = proie, 'X' = prédateur */
-    int i = 0, j = 0, c;
-    while (i < lignes && (c = fgetc(f)) != EOF) {
-        if (c == '\r')
-            continue;                     /* fin de ligne Windows */
-        if (c == '\n') {
-            if (j > 0) {                  /* une ligne de grille vient de finir */
-                i++;
-                j = 0;
-            }
-            continue;
-        }
-        if (j < colonnes) {
-            if (c == 'o')
+    /* ensuite : une ligne de texte par ligne de grille */
+    char tampon[MOTIF_MAX + 8];
+    int i = 0;                            /* nombre de lignes de grille déjà lues */
+    while (fgets(tampon, sizeof tampon, f) != NULL) {
+        size_t n = strlen(tampon);
+
+        /* un caractère nul dans le fichier, ou une ligne qui ne tient pas dans le
+           tampon (donc trop longue) : on refuse */
+        if (n == 0 || (tampon[n - 1] != '\n' && !feof(f)))
+            return refuser_motif(g, f);
+
+        /* on enlève la fin de ligne (Windows ou non) et les espaces de fin */
+        while (n > 0 && (tampon[n - 1] == '\n' || tampon[n - 1] == '\r'
+                         || tampon[n - 1] == ' ' || tampon[n - 1] == '\t'))
+            n--;
+        if (n == 0)
+            continue;                     /* ligne vide : on l'ignore */
+
+        if (i >= lignes || (int)n != colonnes)
+            return refuser_motif(g, f);   /* ligne en trop, trop courte ou trop longue */
+
+        for (int j = 0; j < colonnes; j++) {
+            if (tampon[j] == 'o')
                 g->cases[i][j].type = PROIE;
-            else if (c == 'X')
+            else if (tampon[j] == 'X')
                 g->cases[i][j].type = PREDATEUR;
+            else if (tampon[j] != '.')
+                return refuser_motif(g, f);   /* caractère inconnu */
         }
-        j++;
+        i++;
     }
 
     fclose(f);
+    if (i != lignes) {
+        detruire_grille(g);
+        return NULL;                      /* fichier incomplet */
+    }
     return g;
 }
 
