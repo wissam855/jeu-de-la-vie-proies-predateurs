@@ -14,12 +14,18 @@
 #define ROUGE "\033[31m"
 #define RESET "\033[0m"
 
+/* Efface le terminal et remet le curseur en haut à gauche (code ANSI).
+   Aucun paramètre, pas de valeur renvoyée. */
 void effacer_ecran(void)
 {
     /* efface l'écran et remet le curseur en haut à gauche */
     printf("\033[2J\033[H");
 }
 
+/* Affiche la grille dans le terminal : '.' = case vide, 'o' = proie, 'X' = prédateur.
+   Paramètres : g = la grille à afficher (s'il est NULL, rien n'est affiché),
+   couleurs = 1 pour les proies en vert et les prédateurs en rouge, 0 pour sans couleur.
+   Pas de valeur renvoyée. */
 void afficher_grille(const Grille *g, int couleurs)
 {
     if (g == NULL)
@@ -45,6 +51,12 @@ void afficher_grille(const Grille *g, int couleurs)
     }
 }
 
+/* Écrit la notation B/S de la règle dans buf (par exemple "B3/S23"). En mode
+   proies/prédateurs, écrit "proies/predateurs". Si r est NULL, buf reste vide ; si buf
+   est NULL ou taille <= 0, la fonction ne fait rien.
+   Paramètres : r = la règle, buf = le tableau où écrire, taille = sa taille (l'écriture
+   ne la dépasse jamais).
+   Pas de valeur renvoyée. */
 void notation_bs(const Regles *r, char *buf, int taille)
 {
     if (buf == NULL || taille <= 0)
@@ -74,6 +86,11 @@ void notation_bs(const Regles *r, char *buf, int taille)
     snprintf(buf, (size_t)taille, "%s", tmp);  /* copie sans dépasser */
 }
 
+/* Affiche la ligne de statistiques d'une génération : son numéro, le nombre de proies et
+   de prédateurs, le nom de la règle, puis sa notation B/S si le nom ne la contient pas déjà.
+   Paramètres : s = les compteurs de la génération, r = la règle (s'il est NULL, le nom
+   affiché est « ? »).
+   Pas de valeur renvoyée. */
 void afficher_stats(Stats s, const Regles *r)
 {
     char bs[32];
@@ -89,6 +106,9 @@ void afficher_stats(Stats s, const Regles *r)
     printf("\n");
 }
 
+/* Attend ms millisecondes (Sleep sous Windows, nanosleep ailleurs). Ne fait rien si ms <= 0.
+   Paramètre : ms = la durée de la pause, en millisecondes.
+   Pas de valeur renvoyée. */
 void pause_ms(int ms)
 {
     if (ms <= 0)

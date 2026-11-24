@@ -87,6 +87,10 @@ Grille *charger_motif(const char *chemin)
     return g;
 }
 
+/* Écrit une ligne « generation,proies,predateurs » dans le fichier CSV. À la génération 0,
+   la ligne des noms de colonnes est écrite d'abord.
+   Paramètres : f = le fichier ouvert en écriture, s = les compteurs de la génération.
+   Renvoie : 0 si c'est bon, -1 si f est NULL. */
 int exporter_stats_csv(FILE *f, Stats s)
 {
     if (f == NULL)
@@ -101,6 +105,11 @@ int exporter_stats_csv(FILE *f, Stats s)
     return 0;
 }
 
+/* Écrit la première ligne de export/etats.txt : « LIGNES l COLONNES c REGLE nom ».
+   À appeler une seule fois, avant la génération 0.
+   Paramètres : f = le fichier ouvert en écriture, g = la grille (pour sa taille),
+   regle = le nom de la règle (« inconnue » s'il est NULL).
+   Renvoie : 0 si c'est bon, -1 si f ou g est NULL. */
 int exporter_entete(FILE *f, const Grille *g, const char *regle)
 {
     if (f == NULL || g == NULL)
@@ -110,6 +119,10 @@ int exporter_entete(FILE *f, const Grille *g, const char *regle)
     return 0;
 }
 
+/* Écrit une génération dans le fichier d'export : la ligne « GEN n », puis une ligne de
+   texte par ligne de grille ('.' vide, 'o' proie, 'X' prédateur).
+   Paramètres : f = le fichier ouvert en écriture, g = la grille, generation = son numéro.
+   Renvoie : 0 si c'est bon, -1 si f ou g est NULL. */
 int exporter_etat(FILE *f, const Grille *g, int generation)
 {
     if (f == NULL || g == NULL)
@@ -135,6 +148,13 @@ static void enlever_fin_de_ligne(char *ligne)
         ligne[--n] = '\0';
 }
 
+/* Bonus web : convertit export/etats.txt en export/etats.js, le fichier que lit la page
+   web (une chaîne de texte par génération). Vérifie l'en-tête (tailles de 1 à 1000), la
+   longueur de chaque ligne et ses symboles. En cas d'erreur, le fichier .js à moitié
+   écrit est supprimé.
+   Paramètres : chemin_txt = le fichier d'export à lire, chemin_js = le fichier à écrire.
+   Renvoie : 0 si c'est bon, -1 en cas d'erreur (fichier introuvable ou invalide, aucune
+   génération, écriture impossible). */
 int convertir_export_js(const char *chemin_txt, const char *chemin_js)
 {
     if (chemin_txt == NULL || chemin_js == NULL)
