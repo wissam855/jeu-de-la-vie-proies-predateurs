@@ -1,6 +1,12 @@
 #include <stdlib.h>
 #include "grille.h"
 
+/* Crée une grille de lignes x colonnes cases, toutes vides, en 3 étages : la structure, le
+   tableau de pointeurs (un par ligne), puis chaque ligne de cellules. Si une allocation
+   échoue, tout ce qui a déjà été alloué est libéré.
+   Paramètres : lignes, colonnes = la taille (elles doivent être positives).
+   Renvoie : la nouvelle grille (à libérer avec detruire_grille), ou NULL si la taille est
+   invalide ou si la mémoire manque. */
 Grille *creer_grille(int lignes, int colonnes)
 {
     /* 1. tailles invalides */
@@ -42,6 +48,10 @@ Grille *creer_grille(int lignes, int colonnes)
 
 
 
+/* Libère toute la mémoire d'une grille : chaque ligne, puis le tableau de pointeurs, puis
+   la structure (dans cet ordre).
+   Paramètre : g = la grille à détruire (s'il est NULL, la fonction ne fait rien).
+   Pas de valeur renvoyée. */
 void detruire_grille(Grille *g)
 {
     if (g == NULL)
@@ -53,6 +63,9 @@ void detruire_grille(Grille *g)
 }
 
 
+/* Remet toutes les cases de la grille à VIDE, avec une énergie et un âge de 0.
+   Paramètre : g = la grille à vider (s'il est NULL, la fonction ne fait rien).
+   Pas de valeur renvoyée. */
 void vider_grille(Grille *g)
 {
     if (g == NULL)
@@ -65,6 +78,10 @@ void vider_grille(Grille *g)
         }
 }
 
+/* Copie toutes les cases de src dans dst.
+   Paramètres : src = la grille à copier, dst = la grille qui reçoit la copie. Elles doivent
+   avoir la même taille ; sinon, ou si l'une est NULL, rien n'est copié.
+   Pas de valeur renvoyée. */
 void copier_grille(const Grille *src, Grille *dst)
 {
     if (src == NULL || dst == NULL)
@@ -77,6 +94,12 @@ void copier_grille(const Grille *src, Grille *dst)
 }
 
 
+/* Remplit la grille au hasard : chaque case devient une proie avec la probabilité p_proie,
+   un prédateur avec la probabilité p_predateur, sinon elle reste vide. Les prédateurs
+   gardent une énergie de 0 : voir initialiser_predateurs.
+   Paramètres : g = la grille à remplir (s'il est NULL, rien n'est fait), p_proie et
+   p_predateur = des proportions entre 0 et 1 dont la somme ne dépasse pas 1.
+   Pas de valeur renvoyée. */
 void remplir_aleatoire(Grille *g, double p_proie, double p_predateur)
 {
     if (g == NULL)
@@ -93,6 +116,10 @@ void remplir_aleatoire(Grille *g, double p_proie, double p_predateur)
         }
 }
 
+/* Compte les proies et les prédateurs parmi les 8 cases voisines de la case (i, j).
+   Paramètres : g = la grille, i et j = la ligne et la colonne de la case, tore = 1 pour
+   que les bords se rejoignent, 0 pour que ce qui est hors de la grille compte pour vide.
+   Renvoie : le nombre de proies et de prédateurs voisins (0 et 0 si g est NULL). */
 Voisinage compter_voisins(const Grille *g, int i, int j, int tore)
 {
     Voisinage v = { 0, 0 };
@@ -119,6 +146,11 @@ Voisinage compter_voisins(const Grille *g, int i, int j, int tore)
     return v;
 }
 
+/* Donne l'énergie energie à chaque prédateur de la grille et remet son âge à 0. À appeler
+   après remplir_aleatoire ou le chargement d'un motif, sinon les prédateurs partent avec 0
+   d'énergie et meurent dès la première génération.
+   Paramètres : g = la grille (s'il est NULL, rien n'est fait), energie = l'énergie de départ.
+   Pas de valeur renvoyée. */
 void initialiser_predateurs(Grille *g, int energie)
 {
     if (g == NULL)
