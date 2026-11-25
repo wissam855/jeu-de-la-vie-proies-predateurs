@@ -117,6 +117,24 @@ Oui.    Donc tu vas faire une liste de tous les tâches et de tous les étapes f
 - **Ce qu'on a gardé :** la règle est active : chaque changement passe par une branche, une pull request et l'approbation d'un autre membre.
 - **Ce que j'ai appris :** envoyer une capture d'écran aide l'IA à guider précisément ; il faut vérifier qu'on est sur la bonne page avant de modifier les réglages du dépôt.
 
+### IA-04 — 18/11 — Wissam (prompt de Nizar) — Claude
+- **Objectif :** faire passer le test de saisie du menu (tâche W9, `test_saisie.txt`) sous Windows.
+- **Prompt 1 :** (Nizar recopie son message exact)
+- **Résultat :** l'IA a fourni le test, qui lance le programme avec un fichier de saisie, et le code du choix de la règle dans le menu.
+- **Problème :** sous Windows, à la fin du test, le fichier `test_saisie.txt` ne pouvait pas être supprimé, parce qu'il était encore ouvert par le programme. Sous Linux, ça passait sans problème.
+- **Prompt 2 (amélioré) :** (Nizar recopie le message où il a donné le problème exact)
+- **Ce qu'on a gardé :** le test ferme l'entrée standard avant de supprimer le fichier, et `test_saisie.txt` est ajouté au `.gitignore` (PR n° 39).
+- **Ce que j'ai appris :** sous Windows, on ne peut pas supprimer un fichier tant qu'il est encore ouvert, alors qu'il faut le fermer d'abord.
+
+### IA-05 — 24/11 — Wissam (prompt de Nizar) — Claude
+- **Objectif :** commenter toutes les fonctions de `main.c` et `menu.c` (tâche T5.3).
+- **Prompt 1 :** (Nizar recopie son message exact)
+- **Résultat :** l'IA a donné la règle à suivre (un commentaire juste au-dessus de chaque fonction : ce qu'elle fait, ses paramètres, ce qu'elle renvoie) et les commentaires à recopier.
+- **Problème :** au premier essai, j'avais laissé une ligne vide entre le commentaire et la fonction, et il manquait une ligne vide avant le commentaire.
+- **Prompt 2 (amélioré) :** (Nizar recopie le message où il a envoyé la photo de `main.c`)
+- **Ce qu'on a gardé :** les commentaires de `main()`, `parametres_par_defaut()` et `menu_principal()`, collés directement au-dessus de la fonction, sans ligne vide entre `*/` et la signature (PR n° 64).
+- **Ce que j'ai appris :** quand je ne comprends pas ce qui est faux, envoyer une photo de mon fichier permet de voir tout de suite l'erreur.
+
 ## Modèle d'entrée
 
 ### IA-XX — JJ/MM — Qui — Outil utilisé
