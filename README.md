@@ -25,7 +25,7 @@ permet de tout régler sans recompiler.
 - `tests/` : tests automatiques
 - `export/` : fichiers générés par le programme
 - `web/` : page web (bonus)
-- `docs/` : journal de bord, journal IA, expériences, rapport
+- `docs/` : journal de bord, journal IA, expériences, résultats de valgrind, images
 
 ## Compilation
 
