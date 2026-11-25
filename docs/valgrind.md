@@ -5,7 +5,9 @@ Commande utilisée pour chaque cas (les touches du menu sont envoyées avec `pri
     valgrind --leak-check=full --show-leak-kinds=all ./simulation
 
 Environnement : Linux (Ubuntu 24.04), gcc 13.3, valgrind 3.22.0, code de la branche `main` après le merge de la page web.
-Ces essais ont été lancés depuis un environnement Linux (Windows n'a pas valgrind). Elamine peut les relancer sous WSL ou sur une machine de la fac pour confirmer.
+Ces essais ont été lancés depuis un environnement Linux (Windows n'a pas valgrind).
+
+Reconfirmation le 25/11 par Nizar sous WSL (Ubuntu, gcc 15.2, valgrind 3.26.0), sur le code de `main` après la PR n° 75, pour le cas « Motif » (motifs/planeur.txt, 20 générations) : 28 allocations / 28 libérations, `All heap blocks were freed -- no leaks are possible`, `ERROR SUMMARY: 0 errors`. Même résultat que sous Linux. Les 7 autres cas n'ont pas été relancés sous WSL.
 
 | Cas | Ce qui est lancé | Allocations / libérations | Résultat |
 |---|---|---|---|
