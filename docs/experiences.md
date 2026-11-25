@@ -1,5 +1,7 @@
 # Expériences
 
+Ce fichier garde la trace des essais faits avec le simulateur : chaque ligne du tableau est un essai, avec la règle, la taille de la grille, la graine, les paramètres et ce qu'on observe. Tous les essais utilisent une grille de 40 × 80 en tore (les bords se rejoignent). Les pourcentages sont calculés sur les 3 200 cases de la grille. Quand la graine est « aléatoire », la grille de départ est différente à chaque essai, d'où deux essais par règle pour voir si le résultat dépend du hasard. Les conclusions sont après le tableau.
+
 | Date | Qui | Règle | Taille et graine | Paramètres | Ce qu'on observe |
 |---|---|---|---|---|---|
 | 18/11 | Nizar | Maze (B3/S12345) | 40 × 80, graine aléatoire (1er essai) | 30 % de proies, 200 générations, tore | Des murs et des couloirs se forment, comme un labyrinthe ; 1 796 proies à la génération 199 (environ 56 % de la grille, contre 30 % au départ) |
@@ -29,3 +31,26 @@
 | 23/11 | Nizar | Proies-Predateurs (T3.8) | 40 × 80, graine 42 (PC de Nizar, Windows) | mêmes réglages ; seuil_predation = 1 et pred_energie_init = 2 | 12 proies et 36 prédateurs à la génération 499 |
 | 23/11 | Nizar | Proies-Predateurs (T3.8) | 40 × 80, graine 42 (PC de Nizar, Windows) | mêmes réglages ; seuil_predation = 1 et pred_energie_init = 1 | Les deux espèces sont présentes en nombre comparable : 403 proies et 355 prédateurs à la génération 499. Un nouveau prédateur ne survit que s'il a une proie voisine, ce qui limite leur nombre et laisse les proies repousser |
 | 23/11 | Nizar | Proies-Predateurs (T3.8) | 40 × 80, 500 générations, graines 1 à 12 (PC de Nizar, Windows) | seuil_predation = 1 et pred_energie_init = 1 ; autres réglages de départ | Les deux espèces survivent dans les 12 cas : entre 3 et 46 proies et entre 9 et 68 prédateurs à la génération 499. Les effectifs restent modestes et varient beaucoup d'une graine à l'autre |
+
+## Conclusions
+
+### Les règles de vie (essais du 18/11, 30 % de cellules vivantes au départ, 200 générations)
+
+Les deux essais de chaque règle donnent des résultats proches : le hasard de la grille de départ change peu le résultat final. Classées par nombre de cellules vivantes à la fin :
+
+- **Life without Death :** environ 67 à 68 %. Aucune cellule ne meurt, le nombre ne fait que monter, mais la grille ne se remplit pas complètement.
+- **Maze :** environ 56 %. Des murs et des couloirs se forment.
+- **Seeds :** environ 21 à 22 %. Aucune cellule ne survit d'une génération à l'autre, donc aucune forme stable.
+- **HighLife :** environ 8 à 12 %, plus variable d'un essai à l'autre : environ le double de Conway.
+- **Conway :** environ 5 %. Il reste des formes connues : blocs, clignotants, ruches.
+- **Day & Night :** moins de 1 %. Presque tout meurt, parce que la règle est symétrique et qu'on part avec moins de 50 % de cellules vivantes.
+
+### Proies et prédateurs (essais du 22/11 et du 23/11, graine 42)
+
+- Avec les réglages de départ, les prédateurs disparaissent à la génération 25, sur le PC de Nizar comme sur celui de Wissam (même résultat : même grille avec la graine 42).
+- Changer l'énergie de départ (`pred_energie_init` à 4, 6 ou 8) ne change rien.
+- Un âge maximal plus grand (`pred_age_max` à 25 puis 40) retarde la disparition (générations 35 et 50), mais ne l'empêche pas.
+- Partir avec plus de prédateurs (10 % ou 20 %) retarde aussi la disparition (générations 42 et 48), sans l'empêcher.
+- Le paramètre décisif est `seuil_predation` : à 1, les deux espèces survivent, mais les proies sont presque éteintes (11 proies, 66 prédateurs).
+- Avec `seuil_predation = 1` et `pred_energie_init = 1`, les deux espèces sont en nombre comparable : 403 proies et 355 prédateurs à la génération 499.
+- Avec ces réglages, les deux espèces survivent aussi sur les 12 graines testées (entre 3 et 46 proies et entre 9 et 68 prédateurs), mais les effectifs restent modestes et varient beaucoup.
