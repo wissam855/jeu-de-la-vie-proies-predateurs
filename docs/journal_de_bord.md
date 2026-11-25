@@ -1,5 +1,43 @@
 # Journal de bord
 
+*Les séances du 10 au 18/11 ont été écrites le 25/11 à partir de l'historique Git (commits, pull requests, tags). Les « présents » sont ceux qui ont poussé du code ou des documents ce jour-là.*
+
+## Séance du 10/11 — présents (d'après Git) : Wissam, Nizar
+- Fait : création du dépôt, de l'arborescence et du `.gitignore` ; README avec la description du projet et le tableau de l'équipe (Wissam) ; plan de projet, préparé par Nizar avec l'IA (conversations notées plus tard dans le journal IA, entrées IA-01 à IA-03).
+- Décisions prises : les quatre rôles (coordinateur, distributeur, producteur, éditeur) et le responsable de chaque fichier, notés dans le README.
+- À faire (qui → quoi) : Nizar → document des tâches de chacun ; Wissam → `types.h` et `main.c` minimal.
+- Blocages : aucun noté.
+
+## Séance du 13/11 — présents (d'après Git) : Wissam, Nizar
+- Fait : `types.h` et `main.c` minimal (Wissam, PR #1) ; document « Tâches, étapes et ordre de chacun » (Nizar).
+- Décisions prises : une tâche = une issue = une branche = une pull request, relue par un autre membre avant la fusion ; `main` protégée (une approbation obligatoire).
+- À faire : chacun → les fichiers `.h` de la phase 0 (structures et prototypes de ses fichiers).
+- Blocages : aucun noté.
+
+## Séance du 14/11 — présents (d'après Git) : Wissam, Elamine, John-Lucas, Nizar
+- Fait : phase 0 terminée avec les fichiers `.h` et le Makefile (PR #2 à #7) : `regles.h` (Nizar), `grille.h` et `simulation.h` (Elamine), `affichage.h` et `io.h` (John-Lucas), `menu.h` (Wissam), Makefile (John-Lucas), modèles des trois journaux (Nizar).
+- Décisions prises : on commence la phase 1 (Conway dans le terminal) avec une tâche par personne : W5 `menu.c`, N3 `regles.c`, J4 `affichage.c`, E3 `grille.c`.
+- À faire : Nizar → entrées IA-01 à IA-03 dans le dépôt ; John-Lucas → choisir comment lancer le programme sur son PC ; Elamine → vérifier que `make` compile sur son PC.
+- Blocages : sur le PC de John-Lucas, Windows bloque le lancement du programme (erreur 4551, Smart App Control) ; chez Elamine, `make` est installé grâce à une clé USB, le serveur MinGW refusant le téléchargement.
+
+## Séance du 16/11 — présents (d'après Git) : Wissam, Elamine, Nizar (John-Lucas sans commit ce jour-là)
+- Fait : entrées IA-01 à IA-03 du journal IA (PR #21) ; E3 `grille.c` : `creer_grille`, `detruire_grille`, `vider_grille`, `copier_grille` et leurs tests (PR #22) ; N3 `regles.c` avec Conway B3/S23 et le début du catalogue (PR #23) ; N4 les 18 cas de test de Conway (PR #24) ; E4 `remplir_aleatoire` et `compter_voisins` (PR #25) ; W5 `menu.c` et paramètres par défaut (PR #26) ; E5 `simulation.c` avec `etape_suivante` et `calculer_stats` (PR #27).
+- Décisions prises : chaque fonction est livrée avec ses tests dans la même pull request.
+- À faire : John-Lucas → J4 `affichage.c` ; Wissam → W6 `main.c` v1.
+- Blocages : aucun noté.
+
+## Séance du 17/11 — présents (d'après Git) : Wissam, John-Lucas (Nizar et Elamine sans commit ce jour-là)
+- Fait : J4 `affichage.c` (grille, statistiques, couleurs, pause, PR #28) ; W6 `main.c` v1 (PR #29) ; J5 `charger_motif` et les motifs bloc, clignotant et planeur (PR #30) ; J6 cibles `make test` et `make valgrind` (PR #31) ; W7 `main.c` v2 avec la boucle de simulation et un motif en argument (PR #32).
+- Décisions prises : le motif de départ peut être donné en argument au programme.
+- À faire : Nizar → N5 README ; Wissam → W8 menu des paramètres.
+- Blocages : aucun noté.
+
+## Séance du 18/11 — présents (d'après Git) : Wissam, Elamine, John-Lucas, Nizar
+- Fait : fin de la phase 1 (README, PR #33), puis phase 2 (règles modifiables) : N6 lecture d'une règle B/S (PR #34), W8 menu des paramètres (PR #35), N7 fichiers de règles (PR #36), N8 catalogue de 6 règles (PR #37), W9 choix de la règle dans le menu (PR #38), E6 test du tore, le planeur revient à sa place après 32 générations (PR #40), J7 notation B/S sous la grille (PR #44) ; essais T2.7 de chacun (Nizar : Maze et Life without Death, Elamine : Day & Night, Wissam : Conway et HighLife, John-Lucas : Seeds, PR #41 à #43 et #45).
+- Décisions prises : chaque membre fait ses essais T2.7 deux fois et les note dans `docs/experiences.md`.
+- À faire : préparer la release v0.2 ; John-Lucas → J8 et J9 ; Nizar → N9 ; Elamine → E7.
+- Blocages : sous Windows, le test du menu ne pouvait pas supprimer `test_saisie.txt` (fichier encore ouvert) ; corrigé en fermant l'entrée standard avant de supprimer le fichier (PR #39).
+
 ## Séance du 19/11 — présents : Wissam, Elamine, Nizar (John-Lucas absent)
 - Fait depuis la dernière fois : phase 2 terminée (N6, N7, N8, W8, W9, J7, E6, expériences T2.7 de chacun).
 - Décisions prises : on prépare la release v0.2 sans attendre John-Lucas ; ses tâches J8 et J9 lui restent.
