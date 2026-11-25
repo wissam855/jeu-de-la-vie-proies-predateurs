@@ -2,6 +2,8 @@
 
 Outil utilisé : Claude (assistant IA d'Anthropic), dans une conversation suivie depuis le 10/11.
 
+Tout le code et toutes les instructions générés par l'IA sont passés par la conversation de Nizar, qui les a transmis aux autres membres. Chaque entrée dit qui a posé la question, qui a appliqué la réponse et ce qui n'a pas marché.
+
 Règles de l'équipe : on copie le prompt exact, on note aussi ce qui n'a pas marché, et on n'intègre pas de code qu'on ne sait pas expliquer.
 
 Les entrées IA-01 à IA-03 ont été préparées avec l'aide de l'IA à partir de la conversation, puis relues et complétées par l'équipe.
@@ -119,21 +121,84 @@ Oui.    Donc tu vas faire une liste de tous les tâches et de tous les étapes f
 
 ### IA-04 — 18/11 — Wissam (prompt de Nizar) — Claude
 - **Objectif :** faire passer le test de saisie du menu (tâche W9, `test_saisie.txt`) sous Windows.
-- **Prompt 1 :** (Nizar recopie son message exact)
+- **Prompt 1 (résumé) :** Nizar a demandé un test qui lance le programme avec un fichier de saisie pour vérifier le choix de la règle dans le menu (tâche W9).
 - **Résultat :** l'IA a fourni le test, qui lance le programme avec un fichier de saisie, et le code du choix de la règle dans le menu.
 - **Problème :** sous Windows, à la fin du test, le fichier `test_saisie.txt` ne pouvait pas être supprimé, parce qu'il était encore ouvert par le programme. Sous Linux, ça passait sans problème.
-- **Prompt 2 (amélioré) :** (Nizar recopie le message où il a donné le problème exact)
+- **Prompt 2 (amélioré, résumé) :** Nizar a donné à l'IA le message d'erreur exact de Windows sur la suppression de `test_saisie.txt`, au lieu de décrire le problème en général.
 - **Ce qu'on a gardé :** le test ferme l'entrée standard avant de supprimer le fichier, et `test_saisie.txt` est ajouté au `.gitignore` (PR n° 39).
 - **Ce que j'ai appris :** sous Windows, on ne peut pas supprimer un fichier tant qu'il est encore ouvert, alors qu'il faut le fermer d'abord.
 
 ### IA-05 — 24/11 — Wissam (prompt de Nizar) — Claude
 - **Objectif :** commenter toutes les fonctions de `main.c` et `menu.c` (tâche T5.3).
-- **Prompt 1 :** (Nizar recopie son message exact)
+- **Prompt 1 (résumé) :** Nizar a demandé des commentaires pour toutes les fonctions de `main.c` et `menu.c`, avec la convention du projet (tâche T5.3).
 - **Résultat :** l'IA a donné la règle à suivre (un commentaire juste au-dessus de chaque fonction : ce qu'elle fait, ses paramètres, ce qu'elle renvoie) et les commentaires à recopier.
 - **Problème :** au premier essai, j'avais laissé une ligne vide entre le commentaire et la fonction, et il manquait une ligne vide avant le commentaire.
-- **Prompt 2 (amélioré) :** (Nizar recopie le message où il a envoyé la photo de `main.c`)
+- **Prompt 2 (amélioré, résumé) :** Nizar a envoyé une photo de `main.c` pour que l'IA voie exactement où étaient les lignes vides.
 - **Ce qu'on a gardé :** les commentaires de `main()`, `parametres_par_defaut()` et `menu_principal()`, collés directement au-dessus de la fonction, sans ligne vide entre `*/` et la signature (PR n° 64).
 - **Ce que j'ai appris :** quand je ne comprends pas ce qui est faux, envoyer une photo de mon fichier permet de voir tout de suite l'erreur.
+
+### IA-06 — 21/11 — John-Lucas (prompt de Nizar) — Claude
+- **Objectif :** lancer les programmes compilés sur le PC de John-Lucas pour faire les tests des tâches J8 et J9.
+- **Prompt 1 (résumé) :** Nizar a décrit l'erreur « Permission denied » au lancement des programmes sur le PC de John-Lucas et a demandé comment la corriger.
+- **Résultat :** l'IA a expliqué que Windows (Smart App Control) bloquait le lancement des programmes compilés, avec l'erreur « Permission denied ».
+- **Problème :** la solution évidente était de désactiver Smart App Control, mais on ne peut pas le réactiver ensuite.
+- **Prompt 2 (amélioré, résumé) :** Nizar a demandé les solutions possibles et leurs conséquences, avant de choisir de ne pas désactiver Smart App Control.
+- **Ce qu'on a gardé :** on ne désactive pas Smart App Control. John-Lucas compile et pousse son code, et ses relecteurs lancent les tests à sa place (J8 et J9, PR n° 49 et n° 50).
+- **Ce que j'ai appris :** un blocage de Windows (Smart App Control) ne se contourne pas toujours : on a gardé la sécurité activée et on a fait lancer les tests par les relecteurs.
+
+### IA-07 — 17/11 et 24/11 — John-Lucas (prompt de Nizar) — Claude
+- **Objectif :** lire un motif depuis un fichier avec `charger_motif` (tâche J5), puis le rendre solide face aux fichiers invalides (tâche J11).
+- **Prompt 1 (résumé) :** Nizar a demandé une fonction `charger_motif` qui lit un motif depuis un fichier et les motifs bloc, clignotant et planeur (tâche J5).
+- **Résultat :** l'IA a fourni `charger_motif` et les motifs bloc, clignotant et planeur (PR n° 30).
+- **Problème :** la première version ne refusait pas tous les motifs invalides (ligne trop courte ou trop longue, caractère inconnu, ligne en trop, fichier incomplet). C'est apparu en relisant la gestion des erreurs.
+- **Prompt 2 (amélioré, résumé) :** Nizar a demandé que `charger_motif` refuse chaque motif invalide, en listant les cas à tester.
+- **Ce qu'on a gardé :** `charger_motif` refuse les motifs invalides, ferme le fichier et libère la grille. `tests/test_io.c` passe de 3 à 11 cas (PR n° 69, tâche J11 reprise par Nizar).
+- **Ce que j'ai appris :** il faut tester aussi les cas où le fichier est faux, pas seulement le cas où tout se passe bien.
+
+### IA-08 — 20/11 — Elamine (prompt de Nizar) — Claude
+- **Objectif :** donner de l'énergie aux prédateurs au départ avec `initialiser_predateurs` (tâche E8), et tester les proies et les prédateurs sur la grille.
+- **Prompt 1 (résumé) :** Nizar a demandé les tests des proies et des prédateurs (tâche E8) et ce qu'il fallait faire de l'énergie des prédateurs.
+- **Résultat :** l'IA a fourni `initialiser_predateurs` et les tests de `tests/test_pp.c` (PR n° 48).
+- **Problème :** après `remplir_aleatoire`, les prédateurs ont une énergie de 0 : sans cette fonction, ils meurent dès la première génération.
+- **Prompt 2 (amélioré, résumé) :** Nizar a demandé une fonction qui donne l'énergie de départ aux prédateurs après le remplissage aléatoire.
+- **Ce qu'on a gardé :** `initialiser_predateurs(g, energie)` donne l'énergie à chaque prédateur et remet son âge à 0. `main.c` l'appelle après le remplissage aléatoire ou le chargement d'un motif (tâche W10a, PR n° 51).
+- **Ce que j'ai appris :** une cellule créée au hasard a toutes ses valeurs à 0, donc l'énergie des prédateurs doit être donnée à part.
+
+### IA-09 — 16/11 — Elamine (prompt de Nizar) — Claude
+- **Objectif :** écrire `creer_grille`, `detruire_grille`, `vider_grille` et `copier_grille` en allocation dynamique (tâche E3).
+- **Prompt 1 (résumé) :** Nizar a demandé les fonctions `creer_grille`, `detruire_grille`, `vider_grille` et `copier_grille` en allocation dynamique (tâche E3).
+- **Résultat :** l'IA a fourni ces 4 fonctions avec une allocation en trois étages : la structure, un pointeur par ligne, puis les cellules (PR n° 22).
+- **Problème :** aucun problème signalé. Le travail a été livré par étapes le 16/11 (`creer_grille` et `detruire_grille`, puis `vider_grille` et `copier_grille`, puis les tests de `grille.c`).
+- **Prompt 2 (amélioré, résumé) :** pas de deuxième message noté : le travail a été fait par étapes (voir « Problème »).
+- **Ce qu'on a gardé :** `creer_grille` libère tout ce qui est déjà alloué si une allocation échoue ; `detruire_grille` accepte NULL.
+- **Ce que j'ai appris :** avancer fonction par fonction et tester juste après évite de chercher une erreur dans beaucoup de code à la fois.
+
+### IA-10 — 22/11 et 23/11 — Nizar — Claude
+- **Objectif :** trouver des paramètres proies/prédateurs pour que les deux espèces survivent (tâche T3.8) : au départ, les prédateurs disparaissaient vers la génération 25.
+- **Prompt 1 (résumé) :** Nizar a décrit les prédateurs qui disparaissent vers la génération 25 et a demandé comment trouver de bons paramètres (tâche T3.8).
+- **Résultat :** l'IA a proposé de changer `pred_energie_init` (4, 6, 8) dans un fichier de règles d'essai.
+- **Problème :** aucun effet : les prédateurs disparaissaient toujours à la génération 25 (PR n° 53).
+- **Prompt 2 (amélioré, résumé) :** une méthode précise : un seul paramètre changé à la fois, sur une grille de 40 × 80 avec 30 % de proies, 3 % de prédateurs, la graine 42 et 500 générations.
+- **Ce qu'on a gardé :** `seuil_predation = 1` et `pred_energie_init = 1` : avec la graine 42, 403 proies et 355 prédateurs après 500 générations, et les deux espèces vivantes sur 12 graines différentes (PR n° 56, 57 et 58).
+- **Ce que j'ai appris :** pour trouver la cause d'un problème, il faut changer un seul paramètre à la fois et garder les mêmes conditions d'essai.
+
+### IA-11 — 23/11 — Nizar — Claude
+- **Objectif :** afficher les états de la simulation dans une page web (bonus, tâche J10 reprise par Nizar).
+- **Prompt 1 (résumé) :** Nizar a demandé comment afficher les états de la simulation dans une page web (tâche J10).
+- **Résultat :** l'IA a proposé d'exporter les états dans un fichier que la page lit avec `fetch()`.
+- **Problème :** un navigateur bloque `fetch()` sur un fichier local ouvert directement depuis le disque.
+- **Prompt 2 (amélioré, résumé) :** Nizar a expliqué que le navigateur bloque `fetch()` sur un fichier local et a demandé une autre solution.
+- **Ce qu'on a gardé :** l'export écrit `export/etats.js` (et non un fichier `.json`) et la page le charge comme un script (PR n° 60).
+- **Ce que j'ai appris :** une page web ouverte depuis le disque n'a pas le droit de lire un autre fichier avec `fetch()` ; on passe par un fichier `.js` chargé avec une balise `script`.
+
+### IA-12 — 23/11 — Nizar — Claude
+- **Objectif :** vérifier qu'il n'y a pas de fuite mémoire avec `valgrind` (tâche E9, reprise par Nizar).
+- **Prompt 1 (résumé) :** Nizar a demandé comment vérifier les fuites mémoire avec `valgrind` (tâche E9).
+- **Résultat :** l'IA a expliqué que `valgrind` n'existe pas sous Windows.
+- **Problème :** il a fallu lancer les essais sous Linux, et Elamine doit les reconfirmer sous WSL.
+- **Prompt 2 (amélioré, résumé) :** Nizar a demandé comment lancer les essais sous Linux et quels cas tester (8 essais).
+- **Ce qu'on a gardé :** 8 essais (Conway, motif, fichier de règles, proies/prédateurs, exports, motif introuvable, règles fausses, saisie invalide) : 0 fuite et 0 erreur, résultats dans `docs/valgrind.md` (PR n° 61), avec la mention « à reconfirmer sous WSL ».
+- **Ce que j'ai appris :** les outils de contrôle mémoire dépendent du système : sous Windows, on utilise WSL ou Linux.
 
 ## Modèle d'entrée
 
